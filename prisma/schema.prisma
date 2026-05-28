@@ -1,0 +1,364 @@
+// ============================================================
+// SportsHub — Prisma Schema
+// Base de datos: PostgreSQL (Railway)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// USUARIOS Y AUTENTICACIÓN
+// ============================================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String?  // null si usa OAuth
+  name      String
+  avatar    String?
+  provider  AuthProvider @default(LOCAL)
+  role      Role         @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favoriteTeams   UserFavoriteTeam[]
+  followedPlayers UserFollowedPlayer[]
+  notes           UserNote[]
+  recentlyViewed  RecentlyViewed[]
+
+  @@map("users")
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+// ============================================================
+// DEPORTES Y LIGAS
+// ============================================================
+
+model Sport {
+  id          String  @id @default(uuid())
+  name        String  @unique   // "Soccer", "NBA", "NFL"
+  slug        String  @unique   // "soccer", "nba", "nfl"
+  icon        String?           // URL icono
+  createdAt   DateTime @default(now())
+
+  leagues     League[]
+  positions   Position[]
+
+  @@map("sports")
+}
+
+model League {
+  id          String  @id @default(uuid())
+  name        String                    // "LaLiga", "NBA", "NFL"
+  slug        String  @unique
+  country     String?                   // "Spain", null para ligas globales
+  logoUrl     String?
+  externalId  String?                   // ID en API-Sports / TheSportsDB
+  season      String?                   // "2024-25"
+  createdAt   DateTime @default(now())
+
+  sport       Sport    @relation(fields: [sportId], references: [id])
+  sportId     String
+
+  teams       TeamLeague[]
+  seasons     Season[]
+
+  teamSeasonStats   TeamSeasonStats[]
+  playerSeasonStats PlayerSeasonStats[]
+
+  @@map("leagues")
+}
+
+// ============================================================
+// EQUIPOS
+// ============================================================
+
+model Team {
+  id            String   @id @default(uuid())
+  name          String
+  shortName     String?                 // "RM", "LAL", "KC"
+  slug          String   @unique
+  logoUrl       String?
+  primaryColor  String?                 // "#FFFFFF"
+  secondaryColor String?
+  foundedYear   Int?
+  country       String?
+  city          String?
+  description   String?                 // Historia del club
+  externalId    String?                 // ID en API-Sports
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  stadium       Stadium? @relation(fields: [stadiumId], references: [id])
+  stadiumId     String?  @unique
+
+  leagues       TeamLeague[]
+  players       Player[]
+  seasonStats   TeamSeasonStats[]
+  titles        Title[]
+  history       TeamHistory[]
+  favoritedBy   UserFavoriteTeam[]
+  recentlyViewed RecentlyViewed[]
+  transfersOut Transfer[] @relation("TransferFrom")
+  transfersIn  Transfer[] @relation("TransferTo")
+
+  @@map("teams")
+}
+
+model TeamLeague {
+  team      Team   @relation(fields: [teamId], references: [id])
+  teamId    String
+  league    League @relation(fields: [leagueId], references: [id])
+  leagueId  String
+  active    Boolean @default(true)
+
+  @@id([teamId, leagueId])
+  @@map("team_leagues")
+}
+
+model TeamSeasonStats {
+  id          String @id @default(uuid())
+  season      String                    // "2024-25"
+  played      Int    @default(0)
+  won         Int    @default(0)
+  drawn       Int    @default(0)
+  lost        Int    @default(0)
+  goalsFor    Int    @default(0)
+  goalsAgainst Int   @default(0)
+  points      Int    @default(0)
+  position    Int?
+  extraStats  Json?                     // Datos extra según deporte (ej: yardas en NFL)
+
+  team        Team   @relation(fields: [teamId], references: [id])
+  teamId      String
+  league      League @relation(fields: [leagueId], references: [id])  
+  leagueId    String
+
+  @@unique([teamId, leagueId, season])
+  @@map("team_season_stats")
+}
+
+model Title {
+  id          String   @id @default(uuid())
+  name        String                    // "UEFA Champions League"
+  year        Int
+  description String?
+
+  team        Team     @relation(fields: [teamId], references: [id])
+  teamId      String
+
+  @@map("titles")
+}
+
+model TeamHistory {
+  id          String   @id @default(uuid())
+  year        Int
+  event       String                    // "Fundación del club"
+  description String?
+
+  team        Team     @relation(fields: [teamId], references: [id])
+  teamId      String
+
+  @@map("team_history")
+}
+
+// ============================================================
+// ESTADIOS
+// ============================================================
+
+model Stadium {
+  id            String   @id @default(uuid())
+  name          String
+  capacity      Int?
+  city          String?
+  country       String?
+  inaugurated   Int?                    // Año de inauguración
+  lastRenovated Int?
+  surface       String?                 // "Grass", "Hybrid", "Turf"
+  imageUrl      String?
+  latitude      Float?
+  longitude     Float?
+  description   String?
+  createdAt     DateTime @default(now())
+
+  team          Team?
+
+  @@map("stadiums")
+}
+
+// ============================================================
+// JUGADORES
+// ============================================================
+
+model Position {
+  id        String   @id @default(uuid())
+  name      String                      // "Goalkeeper", "Point Guard", "Quarterback"
+  code      String                      // "GK", "PG", "QB"
+  group     String?                     // "Defender", "Forward", etc.
+
+  sport     Sport    @relation(fields: [sportId], references: [id])
+  sportId   String
+
+  players   Player[]
+
+  @@unique([code, sportId])
+  @@map("positions")
+}
+
+model Player {
+  id            String    @id @default(uuid())
+  firstName     String
+  lastName      String
+  slug          String    @unique
+  jerseyNumber  Int?
+  nationality   String?
+  birthDate     DateTime?
+  birthPlace    String?
+  height        Float?                  // cm
+  weight        Float?                  // kg
+  photoUrl      String?
+  biography     String?
+  active        Boolean   @default(true)
+  externalId    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  position      Position? @relation(fields: [positionId], references: [id])
+  positionId    String?
+
+  team          Team?     @relation(fields: [teamId], references: [id])
+  teamId        String?
+
+  seasonStats   PlayerSeasonStats[]
+  followedBy    UserFollowedPlayer[]
+  recentlyViewed RecentlyViewed[]
+  transfers   Transfer[]
+
+  @@map("players")
+}
+
+model PlayerSeasonStats {
+  id          String @id @default(uuid())
+  season      String                    // "2024-25"
+  stats       Json                      // Flexible: goles/asist (soccer), PPG/RPG (NBA), TD/yds (NFL)
+
+  player      Player @relation(fields: [playerId], references: [id])
+  playerId    String
+  league      League @relation(fields: [leagueId], references: [id])
+  leagueId    String
+
+  @@unique([playerId, leagueId, season])
+  @@map("player_season_stats")
+}
+
+// ============================================================
+// RELACIONES DE USUARIO
+// ============================================================
+
+model UserFavoriteTeam {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  createdAt DateTime @default(now())
+
+  @@id([userId, teamId])
+  @@map("user_favorite_teams")
+}
+
+model UserFollowedPlayer {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  player    Player   @relation(fields: [playerId], references: [id])
+  playerId  String
+  createdAt DateTime @default(now())
+
+  @@id([userId, playerId])
+  @@map("user_followed_players")
+}
+
+model UserNote {
+  id        String   @id @default(uuid())
+  content   String
+  entityType String                     // "team" | "player" | "stadium"
+  entityId  String                      // ID del equipo/jugador/estadio
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@map("user_notes")
+}
+
+model RecentlyViewed {
+  id         String   @id @default(uuid())
+  entityType String                     // "team" | "player" | "stadium"
+  entityId   String
+  viewedAt   DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+
+  team       Team?    @relation(fields: [teamId], references: [id])
+  teamId     String?
+  player     Player?  @relation(fields: [playerId], references: [id])
+  playerId   String?
+
+  @@map("recently_viewed")
+}
+
+// ============================================================
+// TEMPORADAS
+// ============================================================
+
+model Season {
+  id        String   @id @default(uuid())
+  name      String                      // "2024-25"
+  startDate DateTime?
+  endDate   DateTime?
+  current   Boolean  @default(false)
+
+  league    League   @relation(fields: [leagueId], references: [id])
+  leagueId  String
+
+  @@map("seasons")
+}
+
+// ============================================================
+// TRANSFERENCIA
+// ============================================================
+
+model Transfer {
+  id          String   @id @default(uuid())
+  playerId    String
+  fromTeamId  String?
+  toTeamId    String?
+  date        DateTime @default(now())
+  description String?
+
+  player      Player   @relation(fields: [playerId], references: [id])
+  fromTeam    Team?    @relation("TransferFrom", fields: [fromTeamId], references: [id])
+  toTeam      Team?    @relation("TransferTo",   fields: [toTeamId],   references: [id])
+  
+
+  @@map("transfers")
+}
+
+// ============================================================
+// ROL DE USUARIO (agregado para admin)
+// ============================================================
+
+enum Role {
+  USER
+  ADMIN
+}
