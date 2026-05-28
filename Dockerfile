@@ -17,4 +17,4 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY prisma ./prisma
 
 EXPOSE 3000
-CMD ["sh", "-c", "DATABASE_URL=$DATABASE_URL npx prisma migrate deploy --schema=prisma/schema.prisma && node dist/main"]
+CMD ["node", "dist/main"]
