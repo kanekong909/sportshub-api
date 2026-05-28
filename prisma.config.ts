@@ -1,12 +1,8 @@
 import path from 'node:path';
-import 'dotenv/config'; 
-import { defineConfig, env } from 'prisma/config'; 
+import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
-  schema: path.join(process.cwd(), 'prisma', 'schema.prisma'), // Ajuste más seguro para rutas en Node
-  datasource: {
-    url: env("DATABASE_URL"), 
-  },
+  schema: path.join('prisma', 'schema.prisma'),
   migrations: {
     seed: 'ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts',
   },
