@@ -11,15 +11,13 @@ RUN npm run build
 # Etapa 2: Runner
 FROM node:20-alpine
 WORKDIR /app
-# Instalamos solo dependencias de producción
-COPY package*.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci --only=production
-# Copiamos la carpeta dist y la de prisma
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-# IMPORTANTE: Copiamos los binarios de prisma generados
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 EXPOSE 3000
-# Asegúrate de poner la extensión .js
-CMD ["node", "dist/main.js"]
+
+# Usamos find para localizar el archivo .js generado sin importar dónde esté
+CMD ["sh", "-c", "node $(find dist -name main.js)"]
