@@ -17,7 +17,8 @@ async function bootstrap() {
 
   // CORS para Angular
   app.enableCors({
-    origin: frontendUrl,
+    origin: 'https://sportshub-production.up.railway.app', 
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
     credentials: true,
   });
 
