@@ -17,8 +17,11 @@ async function bootstrap() {
 
   // CORS para Angular
   app.enableCors({
-    origin: 'https://sportshub-production.up.railway.app', 
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    origin: [
+      'http://localhost:4200',
+      'https://sportshub-production.up.railway.app',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
