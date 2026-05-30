@@ -9,9 +9,7 @@ export class TeamsService {
   async findAll(query: QueryTeamDto) {
     return this.prisma.team.findMany({
       where: {
-        ...(query.search && {
-          name: { contains: query.search, mode: 'insensitive' },
-        }),
+        ...(query.search && { name: { contains: query.search, mode: 'insensitive' } }),
         ...(query.country && { country: query.country }),
         leagues: query.sport || query.league ? {
           some: {
@@ -35,13 +33,9 @@ export class TeamsService {
       where: { slug },
       include: {
         stadium: true,
-        leagues: { include: { league: { include: { sport: true } } } },
-        players: {
-          where: { active: true },
-          include: { position: true },
-          orderBy: { jerseyNumber: 'asc' },
-        },
-        seasonStats: { orderBy: { season: 'desc' }, take: 5 },
+        leagues: { include: { league: { include: { sport: true, seasons: { orderBy: { name: 'desc' } } } } } },
+        players: { where: { active: true }, include: { position: true }, orderBy: { jerseyNumber: 'asc' } },
+        seasonStats: { orderBy: { season: 'desc' }, take: 5, include: { league: true } },
         titles: { orderBy: { year: 'desc' } },
         history: { orderBy: { year: 'asc' } },
       },
@@ -58,5 +52,32 @@ export class TeamsService {
       include: { league: true },
       orderBy: { season: 'desc' },
     });
+  }
+
+  // Plantilla de un equipo en una temporada específica
+  async getSquadBySeason(slug: string, seasonId: string) {
+    const team = await this.prisma.team.findUnique({ where: { slug } });
+    if (!team) throw new NotFoundException();
+
+    return this.prisma.playerSeasonTeam.findMany({
+      where: { teamId: team.id, seasonId, isActive: true },
+      include: {
+        player: { include: { position: true } },
+        season: true,
+      },
+      orderBy: { player: { jerseyNumber: 'asc' } },
+    });
+  }
+
+  // Temporadas disponibles de un equipo
+  async getTeamSeasons(slug: string) {
+    const team = await this.prisma.team.findUnique({
+      where: { slug },
+      include: { leagues: { include: { league: { include: { seasons: { orderBy: { name: 'desc' } } } } } } },
+    });
+    if (!team) throw new NotFoundException();
+
+    const seasons = team.leagues.flatMap(tl => tl.league.seasons);
+    return seasons;
   }
 }

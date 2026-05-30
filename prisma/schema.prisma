@@ -110,6 +110,7 @@ model Team {
   recentlyViewed RecentlyViewed[]
   transfersOut Transfer[] @relation("TransferFrom")
   transfersIn  Transfer[] @relation("TransferTo")
+  seasonTeams   PlayerSeasonTeam[]
 
   @@map("teams")
 }
@@ -242,6 +243,7 @@ model Player {
   followedBy    UserFollowedPlayer[]
   recentlyViewed RecentlyViewed[]
   transfers   Transfer[]
+  seasonTeams   PlayerSeasonTeam[]
 
   @@map("players")
 }
@@ -258,6 +260,22 @@ model PlayerSeasonStats {
 
   @@unique([playerId, leagueId, season])
   @@map("player_season_stats")
+}
+
+model PlayerSeasonTeam {
+  id          String   @id @default(uuid())
+  playerId    String
+  teamId      String
+  seasonId    String
+  isActive    Boolean  @default(true)  // plantilla actual de esa temporada
+  createdAt   DateTime @default(now())
+
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  team        Team     @relation(fields: [teamId], references: [id])
+  season      Season   @relation(fields: [seasonId], references: [id])
+
+  @@unique([playerId, teamId, seasonId])
+  @@map("player_season_teams")
 }
 
 // ============================================================
@@ -332,6 +350,7 @@ model Season {
   leagueId  String
 
   @@map("seasons")
+  playerTeams   PlayerSeasonTeam[]
 }
 
 // ============================================================

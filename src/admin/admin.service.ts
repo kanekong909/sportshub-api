@@ -68,17 +68,20 @@ export class AdminService {
   // ---- PLAYERS ----
   getPlayers(query: any) {
     return this.prisma.player.findMany({
-      where: query.search ? {
-        OR: [
-          { firstName: { contains: query.search, mode: 'insensitive' } },
-          { lastName:  { contains: query.search, mode: 'insensitive' } },
-        ]
-      } : {},
+      where: {
+        ...(query.teamId && { teamId: query.teamId }),
+        ...(query.search && {
+          OR: [
+            { firstName: { contains: query.search, mode: 'insensitive' } },
+            { lastName:  { contains: query.search, mode: 'insensitive' } },
+          ]
+        }),
+      },
       include: {
         position: true,
         team: { select: { id: true, name: true, slug: true } },
       },
-      orderBy: { lastName: 'asc' },
+      orderBy: { jerseyNumber: 'asc' },
     });
   }
   createPlayer(data: any) {
