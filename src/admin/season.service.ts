@@ -30,9 +30,27 @@ export class SeasonService {
     return this.prisma.season.create({ data: transformedData });
   }
 
+  // season.service.ts - Versión corregida
   updateSeason(id: string, data: any) {
     const { league, id: _id, ...rest } = data;
-    return this.prisma.season.update({ where: { id }, data: rest });
+    
+    // Convertir fechas al formato ISO-8601 si existen
+    const transformedData = {
+      ...rest,
+      startDate: rest.startDate ? new Date(rest.startDate).toISOString() : undefined,
+      endDate: rest.endDate ? new Date(rest.endDate).toISOString() : undefined,
+    };
+    
+    return this.prisma.season.update({
+      where: { id },
+      data: transformedData,
+    });
+  }
+
+  deleteSeason(id: string) {
+    return this.prisma.season.delete({
+      where: { id }
+    });
   }
 
   async setCurrentSeason(id: string) {

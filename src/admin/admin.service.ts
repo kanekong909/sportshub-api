@@ -384,4 +384,5 @@ export class AdminService {
   deleteTeamSeasonStat(id: string) {
     return this.prisma.teamSeasonStats.delete({ where: { id } });
   }
+
 }

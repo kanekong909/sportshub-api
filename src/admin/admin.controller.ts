@@ -141,7 +141,29 @@ export class AdminController {
 
   // Temporada
   @Get('seasons')
-  async getSeasons() {
-    return this.seasons.getAllSeasons(); 
+  async getSeasons(@Query('leagueId') leagueId?: string) {
+    return leagueId 
+      ? this.seasons.getSeasonsByLeague(leagueId)
+      : this.seasons.getAllSeasons();
+  }
+
+  @Post('seasons')
+  async createSeason(@Body() body: any) {
+    return this.seasons.createSeason(body);
+  }
+
+  @Put('seasons/:id')
+  async updateSeason(@Param('id') id: string, @Body() body: any) {
+    return this.seasons.updateSeason(id, body);
+  }
+
+  @Patch('seasons/:id/set-current')
+  async setCurrentSeason(@Param('id') id: string) {
+    return this.seasons.setCurrentSeason(id);
+  }
+
+  @Delete('seasons/:id')
+  async deleteSeason(@Param('id') id: string) {
+    return this.seasons.deleteSeason(id);
   }
 }
