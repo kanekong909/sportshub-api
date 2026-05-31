@@ -111,6 +111,8 @@ model Team {
   transfersOut Transfer[] @relation("TransferFrom")
   transfersIn  Transfer[] @relation("TransferTo")
   seasonTeams   PlayerSeasonTeam[]
+  coachSeasonTeams CoachSeasonTeam[]
+  coachStats       CoachStats[]
 
   @@map("teams")
 }
@@ -269,6 +271,7 @@ model PlayerSeasonTeam {
   seasonId    String
   isActive    Boolean  @default(true)  // plantilla actual de esa temporada
   createdAt   DateTime @default(now())
+  note        String?   // Ej: "Jugó en Sub-17", "Cedido", etc.
 
   player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   team        Team     @relation(fields: [teamId], references: [id])
@@ -351,6 +354,8 @@ model Season {
 
   @@map("seasons")
   playerTeams   PlayerSeasonTeam[]
+  coachSeasonTeams CoachSeasonTeam[]
+  coachStats       CoachStats[]
 }
 
 // ============================================================
@@ -380,4 +385,76 @@ model Transfer {
 enum Role {
   USER
   ADMIN
+}
+
+// ============================================================
+// DIRECTORES TÉCNICOS
+// ============================================================
+
+model Coach {
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  slug        String   @unique
+  nationality String?
+  birthDate   DateTime?
+  birthPlace  String?
+  photoUrl    String?
+  biography   String?
+  active      Boolean  @default(true)
+  externalId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  seasonTeams CoachSeasonTeam[]
+  stats       CoachStats[]
+
+  @@map("coaches")
+}
+
+enum CoachRole {
+  HEAD_COACH
+  ASSISTANT
+  GK_COACH
+  FITNESS
+  ANALYST
+}
+
+model CoachSeasonTeam {
+  id        String    @id @default(uuid())
+  coachId   String
+  teamId    String
+  seasonId  String
+  role      CoachRole @default(HEAD_COACH)
+  isActive  Boolean   @default(true)
+  note      String?
+  createdAt DateTime  @default(now())
+
+  coach     Coach     @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  team      Team      @relation(fields: [teamId], references: [id])
+  season    Season    @relation(fields: [seasonId], references: [id])
+
+  @@unique([coachId, teamId, seasonId])
+  @@map("coach_season_teams")
+}
+
+model CoachStats {
+  id         String   @id @default(uuid())
+  season     String
+  played     Int      @default(0)
+  won        Int      @default(0)
+  drawn      Int      @default(0)
+  lost       Int      @default(0)
+  titlesWon  Json?
+  createdAt  DateTime @default(now())
+
+  coach      Coach    @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  coachId    String
+  team       Team     @relation(fields: [teamId], references: [id])
+  teamId     String
+  season2    Season?  @relation(fields: [seasonId], references: [id])
+  seasonId   String?
+
+  @@unique([coachId, teamId, season])
+  @@map("coach_stats")
 }

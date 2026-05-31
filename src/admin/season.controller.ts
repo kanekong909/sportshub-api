@@ -32,13 +32,18 @@ export class SeasonController {
   }
 
   @Post('squad')
-  addPlayer(@Body() body: { playerId: string; teamId: string; seasonId: string }) {
-    return this.seasons.addPlayerToSeason(body.playerId, body.teamId, body.seasonId);
+  addPlayer(@Body() body: { playerId: string; teamId: string; seasonId: string; note?: string }) {
+    return this.seasons.addPlayerToSeason(body.playerId, body.teamId, body.seasonId, body.note);
   }
 
-  @Delete('squad')
-  removePlayer(@Body() body: { playerId: string; teamId: string; seasonId: string }) {
-    return this.seasons.removePlayerFromSeason(body.playerId, body.teamId, body.seasonId);
+  @Delete('squad/remove')
+  deletePlayer(@Body() body: { playerId: string; teamId: string; seasonId: string }) {
+    return this.seasons.deletePlayerFromSeason(body.playerId, body.teamId, body.seasonId);
+  }
+
+  @Put('squad/note')
+  updateNote(@Body() body: { playerId: string; teamId: string; seasonId: string; note: string; isActive: boolean }) {
+    return this.seasons.updatePlayerSeasonNote(body.playerId, body.teamId, body.seasonId, body.note, body.isActive);
   }
 
   @Get('player/:playerId/history')
@@ -50,4 +55,6 @@ export class SeasonController {
   getCurrentSquad(@Param('teamId') teamId: string) {
     return this.seasons.getCurrentSquad(teamId);
   }
+
+
 }
