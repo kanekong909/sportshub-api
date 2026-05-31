@@ -304,6 +304,7 @@ export class AdminService {
       this.prisma.stadium.count(),
       this.prisma.user.count(),
       this.prisma.league.count(),
+      this.prisma.teamSeasonStats.count(),
     ]);
     return { teams, players, stadiums, users, leagues };
   }
@@ -342,5 +343,45 @@ export class AdminService {
       include: { position: true },
       orderBy: { lastName: 'asc' },
     });
+  }
+
+  // ---- TEAM SEASON STATS ----
+  // Obtener estadísticas de una liga específica o equipo
+  getTeamSeasonStats(query: { leagueId?: string, teamId?: string, season?: string }) {
+    // Construimos el filtro dinámicamente
+    const where: any = {};
+    if (query.leagueId) where.leagueId = query.leagueId;
+    if (query.teamId) where.teamId = query.teamId;
+    if (query.season) where.season = query.season;
+
+    return this.prisma.teamSeasonStats.findMany({
+      where, 
+      include: {
+        team: { select: { name: true, logoUrl: true } },
+        league: { select: { name: true } }
+      },
+      orderBy: { points: 'desc' }
+    });
+  }
+
+  createTeamSeasonStat(data: any) {
+    // data debe contener: season, played, won, drawn, lost, goalsFor, goalsAgainst, points, position, teamId, leagueId
+    return this.prisma.teamSeasonStats.create({
+      data: {
+        ...data,
+      },
+    });
+  }
+
+  updateTeamSeasonStat(id: string, data: any) {
+    const { id: _id, team, league, ...rest } = data;
+    return this.prisma.teamSeasonStats.update({
+      where: { id },
+      data: rest,
+    });
+  }
+
+  deleteTeamSeasonStat(id: string) {
+    return this.prisma.teamSeasonStats.delete({ where: { id } });
   }
 }

@@ -8,12 +8,13 @@ import { memoryStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../auth/guards/roles.guard';
 import { AdminService } from './admin.service';
+import { SeasonService } from './season.service';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 export class AdminController {
-  constructor(private admin: AdminService) {}
+  constructor(private admin: AdminService, private seasons: SeasonService) {}
 
   // ---- EQUIPOS ----
   @Get('teams')
@@ -120,4 +121,27 @@ export class AdminController {
 
   @Get('free-agents')
   getFreeAgents() { return this.admin.getFreeAgents(); }
+
+  // STATS
+  // NUEVOS ENDPOINTS PARA STATS
+  @Get('team-season-stats')
+  getTeamSeasonStats(@Query() query: any) {
+    return this.admin.getTeamSeasonStats(query);
+  }
+
+  @Post('team-season-stats')
+  createTeamSeasonStat(@Body() data: any) {
+    return this.admin.createTeamSeasonStat(data);
+  }
+
+  @Put('team-season-stats/:id')
+  updateTeamSeasonStat(@Param('id') id: string, @Body() data: any) {
+    return this.admin.updateTeamSeasonStat(id, data);
+  }
+
+  // Temporada
+  @Get('seasons')
+  async getSeasons() {
+    return this.seasons.getAllSeasons(); 
+  }
 }
