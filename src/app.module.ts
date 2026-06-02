@@ -10,6 +10,7 @@ import { PlayersModule } from './players/players.module';
 import { StadiumsModule } from './stadiums/stadiums.module';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
+import { CoachesModule } from './coaches/coaches.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AppController } from './app.controller';
     PlayersModule,
     StadiumsModule,
     AdminModule,
+    CoachesModule,
   ],
   controllers: [AppController],
 })
