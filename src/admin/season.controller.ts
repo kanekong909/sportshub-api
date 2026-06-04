@@ -41,9 +41,12 @@ export class SeasonController {
     return this.seasons.deletePlayerFromSeason(body.playerId, body.teamId, body.seasonId);
   }
 
-  @Put('squad/note')
-  updateNote(@Body() body: { playerId: string; teamId: string; seasonId: string; note: string; isActive: boolean }) {
-    return this.seasons.updatePlayerSeasonNote(body.playerId, body.teamId, body.seasonId, body.note, body.isActive);
+ @Put('squad/note')
+  updateNote(@Body() body: { playerId: string; teamId: string; seasonId: string; note: string; isActive: boolean; photoUrl?: string }) {
+    return this.seasons.updatePlayerSeasonNote(
+      body.playerId, body.teamId, body.seasonId, 
+      body.note, body.isActive, body.photoUrl
+    );
   }
 
   @Get('player/:playerId/history')
