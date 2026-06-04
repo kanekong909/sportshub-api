@@ -85,11 +85,17 @@ export class SeasonService {
       orderBy: { player: { jerseyNumber: 'asc' } },
     });
   }
-  async addPlayerToSeason(playerId: string, teamId: string, seasonId: string, note?: string) {
+  async addPlayerToSeason(playerId: string, teamId: string, seasonId: string, note?: string, photoUrl?: string) {
     return this.prisma.playerSeasonTeam.upsert({
+      where:  { playerId_teamId_seasonId: { playerId, teamId, seasonId } },
+      update: { isActive: true, note: note ?? null, photoUrl: photoUrl ?? null },
+      create: { playerId, teamId, seasonId, isActive: true, note: note ?? null, photoUrl: photoUrl ?? null },
+    });
+  }
+  async updatePlayerSeasonNote(playerId: string, teamId: string, seasonId: string, note: string, isActive: boolean, photoUrl?: string) {
+    return this.prisma.playerSeasonTeam.update({
       where: { playerId_teamId_seasonId: { playerId, teamId, seasonId } },
-      update: { isActive: true, note: note ?? null },
-      create: { playerId, teamId, seasonId, isActive: true, note: note ?? null },
+      data:  { note, isActive, ...(photoUrl !== undefined && { photoUrl }) },
     });
   }
   async removePlayerFromSeason(playerId: string, teamId: string, seasonId: string) {
@@ -101,12 +107,6 @@ export class SeasonService {
   async deletePlayerFromSeason(playerId: string, teamId: string, seasonId: string) {
     return this.prisma.playerSeasonTeam.delete({
       where: { playerId_teamId_seasonId: { playerId, teamId, seasonId } },
-    });
-  }
-  async updatePlayerSeasonNote(playerId: string, teamId: string, seasonId: string, note: string, isActive: boolean) {
-    return this.prisma.playerSeasonTeam.update({
-      where: { playerId_teamId_seasonId: { playerId, teamId, seasonId } },
-      data: { note, isActive },
     });
   }
 

@@ -272,6 +272,7 @@ model PlayerSeasonTeam {
   isActive    Boolean  @default(true)  // plantilla actual de esa temporada
   createdAt   DateTime @default(now())
   note        String?   // Ej: "Jugó en Sub-17", "Cedido", etc.
+  photoUrl    String?   // Foto con la camiseta de ese equipo esa temporada
 
   player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   team        Team     @relation(fields: [teamId], references: [id])

@@ -56,5 +56,12 @@ export class SeasonController {
     return this.seasons.getCurrentSquad(teamId);
   }
 
-
+  @Put('squad/photo')
+  @UseGuards(JwtAuthGuard, RolesGuard) @Roles('ADMIN')
+  updateSeasonPhoto(@Body() body: { playerId: string; teamId: string; seasonId: string; photoUrl: string }) {
+    return this.seasons.updatePlayerSeasonNote(
+      body.playerId, body.teamId, body.seasonId,
+      '', true, body.photoUrl
+    );
+  }
 }

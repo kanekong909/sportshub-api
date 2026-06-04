@@ -47,316 +47,80 @@ function getMappedPosition(code: string): string | undefined {
 // JUGADORES - SOLO FÚTBOL (SERIE A)
 // ============================================================
 const PLAYERS = [
-  // Inter Milan
+// --- PORTEROS ---
   {
-    firstName: "Lautaro",
-    lastName: "Martínez",
-    nationality: "Argentina",
-    birthDate: new Date("1997-08-22"),
-    birthPlace: "Bahía Blanca, Argentina",
-    height: 174,
-    weight: 72,
-    jerseyNumber: 10,
-    photoUrl: null,
-    biography: "Delantero argentino, capitán del Inter. Campeón del mundo 2022.",
-    positionCode: "ST",
-    teamName: "Inter Milan"
-  },
-  {
-    firstName: "Nicolò",
-    lastName: "Barella",
-    nationality: "Italy",
-    birthDate: new Date("1997-02-07"),
-    birthPlace: "Cagliari, Italy",
-    height: 175,
-    weight: 68,
-    jerseyNumber: 23,
-    photoUrl: null,
-    biography: "Centrocampista italiano, pieza clave del Inter y la Nazionale.",
-    positionCode: "CM",
-    teamName: "Inter Milan"
-  },
-  {
-    firstName: "Alessandro",
-    lastName: "Bastoni",
-    nationality: "Italy",
-    birthDate: new Date("1999-04-13"),
-    birthPlace: "Casalmaggiore, Italy",
-    height: 190,
-    weight: 75,
-    jerseyNumber: 95,
-    photoUrl: null,
-    biography: "Defensor central italiano, uno de los mejores jóvenes del mundo.",
-    positionCode: "CB",
-    teamName: "Inter Milan"
-  },
-  
-  // AC Milan
-  {
-    firstName: "Rafael",
-    lastName: "Leão",
-    nationality: "Portugal",
-    birthDate: new Date("1999-06-10"),
-    birthPlace: "Almada, Portugal",
-    height: 188,
-    weight: 81,
-    jerseyNumber: 10,
-    photoUrl: null,
-    biography: "Extremo portugués, Balón de Oro del Serie A 2022.",
-    positionCode: "LW",
-    teamName: "AC Milan"
-  },
-  {
-    firstName: "Mike",
-    lastName: "Maignan",
-    nationality: "France",
-    birthDate: new Date("1995-07-03"),
-    birthPlace: "Cayenne, French Guiana",
-    height: 191,
-    weight: 89,
-    jerseyNumber: 16,
-    photoUrl: null,
-    biography: "Portero francés, campeón de la Serie A 2022.",
+    firstName: "Keylor",
+    lastName: "Navas",
+    nationality: "Costa Rica",
+    birthDate: new Date("1986-12-15"),
+    birthPlace: "Pérez Zeledón, Costa Rica",
+    height: 185,
+    weight: 80,
+    jerseyNumber: 13,
+    photoUrl: "https://assets.realmadrid.com/is/image/realmadrid/1330783761069?$Mobile$&fit=wrap&wid=312",
+    biography: "Portero fichado tras su brillante Mundial 2014 con Costa Rica y una gran campaña en el Levante.",
     positionCode: "GK",
-    teamName: "AC Milan"
+    teamName: "Real Madrid"
   },
+
+  // --- CENTROCAMPISTAS ---
   {
-    firstName: "Theo",
-    lastName: "Hernández",
-    nationality: "France",
-    birthDate: new Date("1997-10-06"),
-    birthPlace: "Marseille, France",
-    height: 184,
-    weight: 81,
-    jerseyNumber: 19,
-    photoUrl: null,
-    biography: "Lateral izquierdo francés, uno de los mejores del mundo en su posición.",
-    positionCode: "LB",
-    teamName: "AC Milan"
-  },
-  
-  // Juventus
-  {
-    firstName: "Dušan",
-    lastName: "Vlahović",
-    nationality: "Serbia",
-    birthDate: new Date("2000-01-28"),
-    birthPlace: "Belgrade, Serbia",
-    height: 190,
-    weight: 85,
-    jerseyNumber: 9,
-    photoUrl: null,
-    biography: "Delantero serbio, uno de los mejores goleadores jóvenes del mundo.",
-    positionCode: "ST",
-    teamName: "Juventus"
-  },
-  {
-    firstName: "Federico",
-    lastName: "Chiesa",
-    nationality: "Italy",
-    birthDate: new Date("1997-10-25"),
-    birthPlace: "Genoa, Italy",
-    height: 175,
-    weight: 70,
-    jerseyNumber: 7,
-    photoUrl: null,
-    biography: "Extremo italiano, campeón de la Eurocopa 2021.",
-    positionCode: "RW",
-    teamName: "Juventus"
-  },
-  {
-    firstName: "Manuel",
-    lastName: "Locatelli",
-    nationality: "Italy",
-    birthDate: new Date("1998-01-08"),
-    birthPlace: "Lecco, Italy",
-    height: 186,
-    weight: 75,
-    jerseyNumber: 5,
-    photoUrl: null,
-    biography: "Centrocampista italiano, campeón de la Eurocopa 2021.",
-    positionCode: "CDM",
-    teamName: "Juventus"
-  },
-  
-  // Napoli
-  {
-    firstName: "Victor",
-    lastName: "Osimhen",
-    nationality: "Nigeria",
-    birthDate: new Date("1998-12-29"),
-    birthPlace: "Lagos, Nigeria",
-    height: 186,
-    weight: 78,
-    jerseyNumber: 9,
-    photoUrl: null,
-    biography: "Delantero nigeriano, capocannoniere de la Serie A 2023.",
-    positionCode: "ST",
-    teamName: "Napoli"
-  },
-  {
-    firstName: "Khvicha",
-    lastName: "Kvaratskhelia",
-    nationality: "Georgia",
-    birthDate: new Date("2001-02-12"),
-    birthPlace: "Tbilisi, Georgia",
-    height: 183,
-    weight: 70,
-    jerseyNumber: 77,
-    photoUrl: null,
-    biography: "Extremo georgiano, MVP de la Serie A 2023.",
-    positionCode: "LW",
-    teamName: "Napoli"
-  },
-  {
-    firstName: "Stanislav",
-    lastName: "Lobotka",
-    nationality: "Slovakia",
-    birthDate: new Date("1994-11-25"),
-    birthPlace: "Trenčín, Slovakia",
-    height: 170,
-    weight: 64,
-    jerseyNumber: 68,
-    photoUrl: null,
-    biography: "Centrocampista eslovaco, cerebro del juego del Napoli.",
-    positionCode: "CM",
-    teamName: "Napoli"
-  },
-  
-  // AS Roma
-  {
-    firstName: "Paulo",
-    lastName: "Dybala",
-    nationality: "Argentina",
-    birthDate: new Date("1993-11-15"),
-    birthPlace: "Laguna Larga, Argentina",
-    height: 177,
-    weight: 75,
-    jerseyNumber: 21,
-    photoUrl: null,
-    biography: "Mediapunta argentino, campeón del mundo 2022.",
-    positionCode: "CAM",
-    teamName: "AS Roma"
-  },
-  {
-    firstName: "Lorenzo",
-    lastName: "Pellegrini",
-    nationality: "Italy",
-    birthDate: new Date("1996-06-19"),
-    birthPlace: "Rome, Italy",
-    height: 186,
-    weight: 77,
-    jerseyNumber: 7,
-    photoUrl: null,
-    biography: "Capitán de la Roma, centrocampista ofensivo.",
-    positionCode: "CAM",
-    teamName: "AS Roma"
-  },
-  {
-    firstName: "Gianluca",
-    lastName: "Mancini",
-    nationality: "Italy",
-    birthDate: new Date("1996-04-17"),
-    birthPlace: "Florence, Italy",
-    height: 190,
-    weight: 77,
-    jerseyNumber: 23,
-    photoUrl: null,
-    biography: "Defensor central, capitán de la Roma.",
-    positionCode: "CB",
-    teamName: "AS Roma"
-  },
-  
-  // Lazio
-  {
-    firstName: "Ciro",
-    lastName: "Immobile",
-    nationality: "Italy",
-    birthDate: new Date("1990-02-20"),
-    birthPlace: "Torre Annunziata, Italy",
-    height: 181,
-    weight: 78,
-    jerseyNumber: 17,
-    photoUrl: null,
-    biography: "Máximo goleador histórico de la Lazio y capocannoniere récord.",
-    positionCode: "ST",
-    teamName: "Lazio"
-  },
-  {
-    firstName: "Luis",
-    lastName: "Alberto",
-    nationality: "Spain",
-    birthDate: new Date("1992-09-28"),
-    birthPlace: "San José del Valle, Spain",
-    height: 182,
-    weight: 74,
-    jerseyNumber: 10,
-    photoUrl: null,
-    biography: "Centrocampista español, mago con el balón.",
-    positionCode: "CAM",
-    teamName: "Lazio"
-  },
-  
-  // Atalanta
-  {
-    firstName: "Teun",
-    lastName: "Koopmeiners",
-    nationality: "Netherlands",
-    birthDate: new Date("1998-02-28"),
-    birthPlace: "Castricum, Netherlands",
-    height: 184,
-    weight: 77,
-    jerseyNumber: 7,
-    photoUrl: null,
-    biography: "Centrocampista neerlandés, especialista en tiros largos.",
-    positionCode: "CM",
-    teamName: "Atalanta"
-  },
-  {
-    firstName: "Ademola",
-    lastName: "Lookman",
-    nationality: "Nigeria",
-    birthDate: new Date("1997-10-20"),
-    birthPlace: "London, England",
-    height: 174,
-    weight: 72,
-    jerseyNumber: 11,
-    photoUrl: null,
-    biography: "Extremo nigeriano, hat-trick en la final de la Europa League 2024.",
-    positionCode: "LW",
-    teamName: "Atalanta"
-  },
-  
-  // Fiorentina
-  {
-    firstName: "Nicolás",
-    lastName: "González",
-    nationality: "Argentina",
-    birthDate: new Date("1998-04-06"),
-    birthPlace: "Belén de Escobar, Argentina",
+    firstName: "James",
+    lastName: "Rodríguez",
+    nationality: "Colombia",
+    birthDate: new Date("1991-07-12"),
+    birthPlace: "Cúcuta, Colombia",
     height: 180,
     weight: 75,
     jerseyNumber: 10,
-    photoUrl: null,
-    biography: "Extremo argentino, campeón del mundo 2022 y de la Copa América 2024.",
-    positionCode: "RW",
-    teamName: "Fiorentina"
+    photoUrl: "https://assets.realmadrid.com/is/image/realmadrid/1330783932802?$Mobile$&fit=wrap&wid=312",
+    biography: "Mediapunta estelar y bota de oro del Mundial 2014. Fichaje galáctico del verano procedente del Mónaco.",
+    positionCode: "CAM",
+    teamName: "Real Madrid"
   },
-  
-  // Bologna
   {
-    firstName: "Joshua",
-    lastName: "Zirkzee",
-    nationality: "Netherlands",
-    birthDate: new Date("2001-05-22"),
-    birthPlace: "Schiedam, Netherlands",
-    height: 193,
-    weight: 85,
-    jerseyNumber: 9,
-    photoUrl: null,
-    biography: "Delantero neerlandés, joven promesa del fútbol europeo.",
+    firstName: "Lucas",
+    lastName: "Silva",
+    nationality: "Brasil",
+    birthDate: new Date("1993-02-16"),
+    birthPlace: "Bom Jesus de Goiás, Brasil",
+    height: 182,
+    weight: 80,
+    jerseyNumber: 16,
+    photoUrl: "https://assets.realmadrid.com/is/image/realmadrid/LUCAS-SILVA-PRESENTACION_a_1AM7613?$Mobile$&fit=wrap&wid=312",
+    biography: "Mediocentro defensivo brasileño incorporado en el mercado de invierno de 2015 procedente del Cruzeiro.",
+    positionCode: "CDM",
+    teamName: "Real Madrid"
+  },
+  {
+    firstName: "Martin",
+    lastName: "Ødegaard",
+    nationality: "Noruega",
+    birthDate: new Date("1998-12-17"),
+    birthPlace: "Drammen, Noruega",
+    height: 178,
+    weight: 68,
+    jerseyNumber: 21,
+    photoUrl: "https://assets.realmadrid.com/is/image/realmadrid/ODEGAARD_1VC0708?$Mobile$&fit=wrap&wid=312",
+    biography: "Joven prodigio noruego fichado en enero de 2015. Debutó con el primer equipo en la última jornada de Liga.",
+    positionCode: "CAM",
+    teamName: "Real Madrid"
+  },
+
+  // --- DELANTEROS ---
+  {
+    firstName: "Javier",
+    lastName: "Hernández",
+    nationality: "México",
+    birthDate: new Date("1988-06-01"),
+    birthPlace: "Guadalajara, México",
+    height: 175,
+    weight: 73,
+    jerseyNumber: 14,
+    photoUrl: "https://assets.realmadrid.com/is/image/realmadrid/CHICHARITO-HERNANDEZ_1AM6255?$Mobile$&fit=wrap&wid=312",
+    biography: "Delantero centro ('Chicharito'). Llegó cedido del Manchester United; recordado por su gol decisivo ante el Atlético en Champions.",
     positionCode: "ST",
-    teamName: "Bologna"
+    teamName: "Real Madrid"
   }
 ];
 
@@ -364,7 +128,7 @@ const PLAYERS = [
 // SEED PRINCIPAL
 // ============================================================
 async function main() {
-  console.log('⚽ Iniciando seed de jugadores de la Serie A...\n');
+  console.log('⚽ Iniciando seed de jugadores...\n');
   console.log(`📋 Se crearán ${PLAYERS.length} jugadores\n`);
 
   let created = 0;
@@ -411,15 +175,28 @@ async function main() {
     const playerSlug = slug(`${playerData.firstName}-${playerData.lastName}`);
     
     // Verificar si el jugador ya existe
-    const existing = await prisma.player.findFirst({
-      where: { slug: playerSlug }
-    });
-
-    if (existing) {
-      console.log(`⏭️  ${playerData.firstName} ${playerData.lastName} - ya existe`);
-      skipped++;
-      continue;
+   const existing = await prisma.player.findFirst({
+    where: {
+      OR: [
+        { slug: playerSlug },
+        { firstName: playerData.firstName, lastName: playerData.lastName }
+      ]
     }
+  });
+
+  if (existing) {
+    if (!existing.photoUrl && playerData.photoUrl) {
+      await prisma.player.update({
+        where: { id: existing.id },
+        data:  { photoUrl: playerData.photoUrl }
+      });
+      console.log(`📸 Foto actualizada: ${playerData.firstName} ${playerData.lastName}`);
+    } else {
+      console.log(`⏭️  ${playerData.firstName} ${playerData.lastName} - ya existe`);
+    }
+    skipped++;
+    continue;
+  }
 
     // Crear el jugador
     await prisma.player.create({
